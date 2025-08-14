@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Mesa de escritório</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+    </style>
+    <link rel="shortcut icon" href="Gartoon-Team-Gartoon-Devices-Computer-laptop.512.png" type="image/x-icon">
+</head>
+<body>
+<h1>Documento finaceiro da empresa xx</h1>
+<hr>
+<h2>Cadastro de Produto</h2>
+<form id="formProduto">
+    <input type="hidden" id="idProduto">
+    Nome: <input type="text" id="nome" required>
+    Preço: <input type="number" id="preco" step="0.01" required>
+    <button type="submit">Salvar</button>
+</form>
+
+<h2>Lista de Produtos</h2>
+<table id="tabelaProdutos">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    let produtos = [];
+    let contadorId = 1;
+
+    function renderTabela() {
+        const tbody = document.querySelector("#tabelaProdutos tbody");
+        tbody.innerHTML = "";
+        produtos.forEach(produto => {
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${produto.id}</td>
+                <td>${produto.nome}</td>
+                <td>R$ ${produto.preco.toFixed(2)}</td>
+                <td>
+                    <button onclick="editarProduto(${produto.id})">Editar</button>
+                    <button onclick="confirmarExclusao(${produto.id})">Apagar</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function editarProduto(id) {
+        const produto = produtos.find(p => p.id === id);
+        document.getElementById("idProduto").value = produto.id;
+        document.getElementById("nome").value = produto.nome;
+        document.getElementById("preco").value = produto.preco;
+    }
+
+    function confirmarExclusao(id) {
+        if (confirm("Tem certeza que deseja apagar este produto?")) {
+            produtos = produtos.filter(p => p.id !== id);
+            renderTabela();
+        }
+    }
+
+    document.getElementById("formProduto").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const id = document.getElementById("idProduto").value;
+        const nome = document.getElementById("nome").value;
+        const preco = parseFloat(document.getElementById("preco").value);
+
+        if (id) {
+            let produto = produtos.find(p => p.id == id);
+            produto.nome = nome;
+            produto.preco = preco;
+        } else {
+            produtos.push({ id: contadorId++, nome, preco });
+        }
+
+        this.reset();
+        document.getElementById("idProduto").value = "";
+        renderTabela();
+    });
+
+</script>
+<p><strong>site</strong> para mais informações fica na proxima pagina</p>
+<p>Acesso as <mark>criticas</mark></p>
+</body>
+</html>
